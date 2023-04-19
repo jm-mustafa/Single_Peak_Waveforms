@@ -1,9 +1,9 @@
 # Single_Peak_Waveforms
  Public repo with cyclic form-fitting code
 
-This repository contains two Python scripts: 'skew_fitting' and 'spike_fitting'.
+This repository contains two Python scripts: 'skew_fitting.py' and 'spike_fitting.py'.
 
-'skew_fitting' : Contains the function 'skewed_wave_fit' which calculates the best-fit skew-permitting waveform for input data.
+'skew_fitting.py' : Contains the function 'skewed_wave_fit' which calculates the best-fit skew-permitting waveform for input data.
 
 	Accepts two positional input arguments: 'xdata' and 'ydata'.
 		'xdata' : a 1-D np.array-like object containing equally-spaced x-coordinates.
@@ -15,7 +15,7 @@ This repository contains two Python scripts: 'skew_fitting' and 'spike_fitting'.
 		c     : the mean value of the input ydata.
 		y_out : a 1-D np.array object containing the values of the best-fit waveform evaluated for the input xdata.
 
-'spike_fitting' : Contains the function 'spiked_wave_fit' which calculates the best-fit spike-permitting waveform for input data.
+'spike_fitting.py' : Contains the function 'spiked_wave_fit' which calculates the best-fit spike-permitting waveform for input data.
 
 	Accepts two positional input arguments: 'xdata' and 'ydata'.
 		'xdata' : a 1-D np.array-like object containing equally-spaced x-coordinates.
