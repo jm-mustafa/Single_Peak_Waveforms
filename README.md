@@ -11,6 +11,8 @@ NOTE (27/Apr/2023): These scripts have not been rigorously tested. Please contac
 
 'skew_fitting.py' : Contains the function 'skewed_wave_fit' which calculates the best-fit skew-permitting waveform for input data.
 
+	skewed_wave_fit(xdata, ydata, attempts=1, lin=True)
+
 	Requires two positional input arguments: (xdata, ydata).
 		'xdata' : a 1-D np.array-like object containing equally-spaced x-coordinates.
 		'ydata' : a 1-D np.array-like object of equal length to xdata containing the corresponding y-coordinates.
@@ -27,6 +29,8 @@ NOTE (27/Apr/2023): These scripts have not been rigorously tested. Please contac
 
 
 'spike_fitting.py' : Contains the function 'spiked_wave_fit' which calculates the best-fit spike-permitting waveform for input data.
+
+	spiked_wave_fit(xdata, ydata, attempts=1, lin=True)
 
 	Requires two positional input arguments: (xdata, ydata).
 		'xdata' : a 1-D np.array-like object containing equally-spaced x-coordinates.
