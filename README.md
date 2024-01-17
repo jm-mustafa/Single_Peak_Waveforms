@@ -5,7 +5,7 @@ This repository contains two Python scripts: 'skew_fitting.py' and 'spike_fittin
 
 Script dependencies: numpy, scipy(.optimize).
 
-NOTE (27/Apr/2023): These scripts have not been rigorously tested. Please contact me at j.mustafa@uea.ac.uk if you encounter problems.
+NOTE (17/Jan/2024): These scripts have been created with care, but have not been rigorously tested! Please contact me at j.mustafa@uea.ac.uk if you encounter problems.
 
 
 
@@ -22,7 +22,7 @@ NOTE (27/Apr/2023): These scripts have not been rigorously tested. Please contac
 	Returns a dictionary containing:
 		A     : the best-fit amplitude parameter, A.
 		phi   : the best-fit phase parameter, phi.
-		alpha : the rescaled best-fit skew parameter, alpha.
+		alpha : the rescaled best-fit skew parameter, alpha. (OR the original best-fit skew parameter, alpha_0, if lin=False.)
 		c     : the mean value of the input ydata.
 		y_out : a 1-D np.array object containing the values of the best-fit waveform evaluated for the input xdata.
 
@@ -41,7 +41,6 @@ NOTE (27/Apr/2023): These scripts have not been rigorously tested. Please contac
 	Returns a dictionary containing:
 		A       : the best-fit amplitude parameter, A.
 		phi     : the best-fit phase parameter, phi.
-		beta    : the rescaled best-fit skew parameter, beta.
-		g_beta0 : the best-fit vertical readjustment function parameter, g_beta0.
+		beta    : the rescaled best-fit skew parameter, beta. (OR the original best-fit spike parameter, beta_0, if lin=False.)
 		c       : the mean value of the input ydata.
 		y_out   : a 1-D np.array object containing the values of the best-fit waveform evaluated for the input xdata.

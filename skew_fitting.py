@@ -13,7 +13,7 @@ def skewed_wave_fit(xdata,ydata,attempts=1,lin=True):
     Parameters
     ----------
     xdata : 1-D np.array-like object, length N
-        Equally spaced independent data. First entry should be 0.
+        Equally spaced independent data.
     ydata : 1-D np.array-like object, length N
         Dependent data.
     attempts : Positive integer, optional
@@ -27,9 +27,21 @@ def skewed_wave_fit(xdata,ydata,attempts=1,lin=True):
 
     """
     
-    # Import modules
-    import numpy as np
-    from scipy.optimize import curve_fit
+    # Import modules (if not already imported)
+    try:
+        if type(np) == 'module':
+            np = np
+    except NameError:
+        try:
+            if type(numpy) == 'module':
+                np = numpy
+        except NameError:
+            import numpy as np
+    try:
+        if type(curve_fit) == 'function':
+            curve_fit = curve_fit
+    except NameError:
+        from scipy.optimize import curve_fit
     
     # Standardise input data type
     xdata_np = np.array(xdata)
@@ -46,6 +58,10 @@ def skewed_wave_fit(xdata,ydata,attempts=1,lin=True):
     if len_x != len_y:
         return 'xdata and ydata have unequal lengths ({} and {}).'.format(len_x,len_y)
     
+    # Shift x-axis to set first x-coordinate to 0, if not already 0
+    xshift = xdata_np[0]
+    xdata_np = xdata_np - xshift
+    
     # Calculate xdata cycle period/wavelength
     T = len_x * step
     
@@ -60,6 +76,22 @@ def skewed_wave_fit(xdata,ydata,attempts=1,lin=True):
         FDH_phi = ((np.arctan(-np.imag(fft_FDH) / np.real(fft_FDH)) + np.pi * (np.real(fft_FDH) < 0)) * T/(2 * np.pi)) % T
     else:
         FDH_phi = 0
+    
+    # Define internal function to linearise to skew value
+    def lin_skew(alpha):
+        poly = np.array([-4.73503677e-02, 0, 5.16562873e-02, 0, -2.60647935e-02, 0, -3.73032305e-01, 0, 1.39603118e+00, 0])
+        scaler = np.polyval(poly,1)
+        poly = poly / scaler # the polynomial is scaled (with negligible effect) to ensure that the extreme values of -1 and +1 precisely align for the original and linearised skew values
+        
+        # Solve for linearised skew (alpha) by finding the real root of the polynomial in the -1 to +1 range
+        alpha_allroots = np.roots([*poly[:-1], -SKEW_alpha_0])
+        alpha_lin = np.nan
+        for j in alpha_allroots:
+            if np.abs(j) <=1 and np.imag(j) == 0:
+                alpha_lin = np.real(j)
+        if alpha_lin == np.nan:
+            return 'Failed to linearise the best-fit skew value.'
+        return alpha_lin
     
     # Define internal functions to evaluate the first diurnal harmonic and skew-permitting waveform for given input parameters
     def wave_eval_FDH(x,A,phi):
@@ -137,6 +169,7 @@ def skewed_wave_fit(xdata,ydata,attempts=1,lin=True):
     
     # Assign best-fit output
     [SKEW_A, SKEW_phi, SKEW_alpha_0] = [*popt_skew]
+    SKEW_phi = (SKEW_phi % T) + xshift
     
     # Evaluate the best-fit waveform along the input xdata
     y_out = wave_eval_skew(xdata_np, SKEW_A, SKEW_phi, SKEW_alpha_0)
@@ -145,19 +178,8 @@ def skewed_wave_fit(xdata,ydata,attempts=1,lin=True):
     if not lin:
         return {'A': SKEW_A, 'phi': SKEW_phi, 'alpha_0': SKEW_alpha_0, 'c': c, 'y_out': y_out+c}
     else:
-        # Define the approximate relation between original and linearised skew (this has been done as an opposite-direction polynomial to capture extreme gradients effectively)
-        poly = np.array([-4.73503677e-02, 0, 5.16562873e-02, 0, -2.60647935e-02, 0, -3.73032305e-01, 0, 1.39603118e+00, 0]) # a best-fit 9th order polynomial was calculated to relate the original skew (alpha_0) to the desired linearised value (alpha)
-        scaler = np.polyval(poly,1)
-        poly = poly / scaler # the polynomial is scaled (with negligible effect) to ensure that the extreme values of -1 and +1 precisely align for the original and linearised skew values
-        
-        # Solve for linearised skew (alpha) by finding the real root of the polynomial in the -1 to +1 range
-        alpha_allroots = np.roots([*poly[:-1], -SKEW_alpha_0])
-        SKEW_alpha = np.nan
-        for j in alpha_allroots:
-            if np.abs(j) <=1 and np.imag(j) == 0:
-                SKEW_alpha = np.real(j)
-        if SKEW_alpha == np.nan:
-            return {'A': SKEW_A, 'phi': SKEW_phi, 'alpha_0': SKEW_alpha_0, 'c': c, 'y_out': y_out+c}, 'Failed to linearise the best-fit skew value.'
+        # Use skew linearisation function to calculate linearised skew
+        SKEW_alpha = lin_skew(SKEW_alpha_0)
     
     # Return output with linearised skew value
     return {'A': SKEW_A, 'phi': SKEW_phi, 'alpha': SKEW_alpha, 'c': c, 'y_out': y_out+c}
