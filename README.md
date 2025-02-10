@@ -5,7 +5,7 @@ This repository contains two Python scripts: 'skew_fitting.py' and 'spike_fittin
 
 Script dependencies: numpy, scipy. Ensure numpy is imported (as 'np' or 'numpy') and scipy.optimize.curve_fit is imported (as 'curve_fit') for efficiency.
 
-NOTE (17/Jan/2024): These scripts have been created with care, but have not been rigorously tested! Please contact me at j.mustafa@uea.ac.uk if you encounter problems.
+NOTE (10/Feb/2025): These scripts have been created with care, but have not been rigorously tested! Please contact me at j.m.mustafa@leeds.ac.uk if you encounter problems.
 
 
 
